@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import Flask, escape, request, render_template
 
 app = Flask(__name__, static_folder='../static', static_url_path='', template_folder='../templates')
