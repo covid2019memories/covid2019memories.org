@@ -1,8 +1,7 @@
 # covid2019memories.org
 
 ## The idea
-
-Using app.py to debug and verify, and using main.py to generate a static website into public folder.
+app.py is for debugging and verifying, and main.py is for generating the static website.
 
 The chart state is not include into the base URL of the static website, but is include in URL like
 
@@ -32,13 +31,13 @@ In the virtualenv environment, issue above command to generate all the pages.
 nginx -p . -c ngx.conf
 ```
 
-Using the above command to start a test server
+to start a test server
 
 ```bash
 wget --spider --no-verbose -r http://localhost:8181
 ```
 
-Using above command to find missing links
+to find missing links
 
 
  
