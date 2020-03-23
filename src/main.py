@@ -7,6 +7,7 @@ import pathlib
 import app as webapp
 import util.i18n as i18n
 
+from distutils.dir_util import copy_tree
 from itertools import product
 from flask import url_for
 
@@ -51,6 +52,9 @@ def build_page(appclient, url, fpth=None):
 
 def build_site():
     appclient = client()
+
+    # Static resources
+    copy_tree('static/', 'public/')
 
     # Home page
     build_page(appclient, '/index.html', fpth='%s%s' % (basepath, '/index.html'))
