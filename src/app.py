@@ -8,13 +8,18 @@ app = Flask(__name__, static_folder='../static', static_url_path='', template_fo
 
 
 def build_context(ulang, perspective, category, day):
+    default_cor = ['cn', 'it']
+
     return {
         'ulang': ulang,
         'perspective': perspective,
+        'category': category,
+        'day': day,
         'languages': i18n.tables['languages'],
         'categories': i18n.table(ulang, 'category'),
-        'category': category,
-        'day': day
+        'lables': i18n.table(ulang, 'lable_index_page'),
+        'cor': i18n.table(ulang, 'country_or_region'),
+        'default_cor': default_cor,
     }
 
 

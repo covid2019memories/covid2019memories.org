@@ -81,18 +81,16 @@
 <div class="container">
     <div class="nav-scroller py-1 mb-2">
         <h3 class="pb-4 mb-4 font-italic border-bottom">
-            Explore the memories
+            {{ lables['explore'] }}
         </h3>
     </div>
 
     <div class="row flex-nowrap justify-content-between align-items-left">
         <div class="col-6 d-flex justify-content-begin align-items-left">
             <span class="iconify mt-2 mr-1" data-icon="jam:world" data-inline="false"></span>
-            <span class="p-1">China</span>
-            <span class="p-1">Italian</span>
-            <span class="p-1">Japan</span>
-            <span class="p-1">Korea</span>
-            <span class="p-1">Iran</span>
+            {% for cor_code in default_cor %}
+                <span class="p-1"><a class='cor' id={{cor_code}}>{{cor[cor_code]}}</a></span>
+            {% endfor %}
         </div>
         <div class="col-6 d-flex justify-content-end align-items-right">
             <span class="iconify" data-icon="ic:baseline-date-range" data-inline="false"></span>
