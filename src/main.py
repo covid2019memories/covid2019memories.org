@@ -3,6 +3,7 @@
 import os
 import os.path as path
 import pathlib
+import re
 
 import app as webapp
 import util.i18n as i18n
@@ -44,8 +45,10 @@ def build_page(appclient, url, fpth=None):
             if fpth is None:
                 fpth = '%s%s' % (basepath, url)
                 pathlib.Path(fpth).parent.mkdir(parents=True, exist_ok=True)
-            with open(fpth, mode='wb') as f:
-                f.write(rv.data)
+            with open(fpth, mode='w') as f:
+                body = rv.data.decode(encoding='UTF-8')
+                body = re.sub(r'\s\s+', ' ', body)
+                f.write(body)
         else:
             raise Exception()
 
