@@ -34,7 +34,11 @@ nginx -p . -c ngx.conf
 
 Using the above command to start a test server
 
+```bash
+wget --spider --no-verbose -r http://localhost:8181
+```
 
+Using above command to find missing links
 
 
  
