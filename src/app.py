@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, escape, request, render_template
+from flask import Flask, render_template
 
 import util.i18n as i18n
 
@@ -26,7 +26,7 @@ def build_context(ulang, perspective, category, day):
     }
 
 
-def render_index(ulang='en', perspective='datealigned', category='_', day='latest'):
+def render_index(ulang='en', perspective='da', category='_', day='latest'):
     return render_template('index.html', **build_context(ulang, perspective, category, day))
 
 
