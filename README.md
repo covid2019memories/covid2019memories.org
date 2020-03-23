@@ -12,10 +12,6 @@ base#state
 
 So the full state of the page can be shareable on the web.
 
-
-
-
-
 ## How to setup
 
 ```bash
@@ -24,6 +20,6 @@ cd covid2019memories.org
 . hello
 ```
 
-The above steps will setup development enviroment.
+The above steps will setup a development enviroment.
 
 
