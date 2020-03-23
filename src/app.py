@@ -15,10 +15,13 @@ def build_context(ulang, perspective, category, day):
         'perspective': perspective,
         'category': category,
         'day': day,
+
         'languages': i18n.tables['languages'],
         'categories': i18n.table(ulang, 'category'),
         'lables': i18n.table(ulang, 'lable_index_page'),
-        'cor': i18n.table(ulang, 'country_or_region'),
+        'corz': i18n.table(ulang, 'country_or_region'),
+        'perspectives': i18n.table(ulang, 'perspective'),
+
         'default_cor': default_cor,
     }
 

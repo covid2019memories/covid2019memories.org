@@ -60,7 +60,7 @@
     <header class="blog-header py-3">
         <div class="row flex-nowrap justify-content-between align-items-center">
             <div class="col-8 text-left">
-                <a class="blog-header-logo text-dark" href="#">COVID2019 Memories</a>
+                <a class="blog-header-logo text-dark" href="{{ url_for('index', ulang='en', perspective='da', category='_', day='latest') }}">COVID2019 Memories</a>
             </div>
         </div>
     </header>
@@ -89,12 +89,12 @@
         <div class="col-6 d-flex justify-content-begin align-items-left">
             <span class="iconify mt-2 mr-1" data-icon="jam:world" data-inline="false"></span>
             {% for cor_code in default_cor %}
-                <span class="p-1"><a class='cor' id={{cor_code}}>{{cor[cor_code]}}</a></span>
+                <span class="p-1"><a class='cor' id={{cor_code}}>{{corz[cor_code]}}</a></span>
             {% endfor %}
         </div>
         <div class="col-6 d-flex justify-content-end align-items-right">
-            <span class="iconify" data-icon="ic:baseline-date-range" data-inline="false"></span>
-            <span class="iconify" data-icon="fe-align-bottom" data-inline="false"></span>
+            <a href="{{ url_for('index', ulang=ulang, perspective='ch', category=category, day=day) }}" alt="{{ perspectives['ch'] }}"><span class="iconify" data-icon="ic:baseline-date-range" data-inline="false"></span></a>
+            <a href="{{ url_for('index', ulang=ulang, perspective='da', category=category, day=day) }}" alt="{{ perspectives['da'] }}"><span class="iconify" data-icon="fe-align-bottom" data-inline="false"></span></a>
         </div>
     </div>
 
