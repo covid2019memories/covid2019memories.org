@@ -67,20 +67,13 @@
     <div class="row flex-nowrap justify-content-between align-items-center">
         <div class="col-12 d-flex justify-content-end align-items-right" id="languages">
             <span class="iconify mt-2 mr-1" data-icon="cil:language" data-inline="false"></span>
-            <span class="p-1">Deutsch</span>
-            <span class="p-1">English</span>
-            <span class="p-1">Español</span>
-            <span class="p-1">Français</span>
-            <span class="p-1">Italiano</span>
-            <span class="p-1">Nederlands</span>
-            <span class="p-1">日本語</span>
-            <span class="p-1">Polski</span>
-            <span class="p-1">Português</span>
-            <span class="p-1">Русский</span>
-            <span class="p-1">Svenska</span>
-            <span class="p-1">Tiếng Việt</span>
-            <span class="p-1">中文简</span>
-            <span class="p-1">中文繁</span>
+            {% for lcode, lname in languages.items() %}
+                {% if lcode == ulang %}
+                    <span class="p-1">{{ lname }}</span>
+                {% else %}
+                    <span class="p-1"><a href="{{ url_for('index', ulang=lcode, perspective=perspective, category=category, day=day) }}">{{ lname }}</a></span>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
 </div>
@@ -112,16 +105,13 @@
 
     <div class="nav-scroller py-1 mb-2">
         <nav class="nav d-flex justify-content-between">
-          <a class="p-2 text-muted" href="#">World</a>
-          <a class="p-2 text-muted" href="#">Politics</a>
-          <a class="p-2 text-muted" href="#">Business</a>
-          <a class="p-2 text-muted" href="#">Sports</a>
-          <a class="p-2 text-muted" href="#">Culture</a>
-          <a class="p-2 text-muted" href="#">Technology</a>
-          <a class="p-2 text-muted" href="#">Science</a>
-          <a class="p-2 text-muted" href="#">Health</a>
-          <a class="p-2 text-muted" href="#">Opinion</a>
-          <a class="p-2 text-muted" href="#">Personal</a>
+            {% for ccode, cname in categories.items() %}
+                {% if ccode == category %}
+                    <a class="p-2 text-muted" href="#">{{ cname }}</a>
+                {% else %}
+                    <a class="p-2 text-muted" href="{{ url_for('index', ulang=ulang, perspective=perspective, category=ccode, day=day) }}">{{ cname }}</a>
+                {% endif %}
+            {% endfor %}
         </nav>
     </div>
 
