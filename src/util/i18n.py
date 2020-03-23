@@ -48,6 +48,18 @@ for root, dirs, files in os.walk(i18n_path, followlinks=True):
     if path.basename(root) == 'i18n':
         for d in dirs:
             tables[d] = {}
+        for fnm in files:
+            var = ''.join(fnm.split('.')[:-1])
+            logger.info("initialing var [%s] ..." % (var))
+            fpth = os.path.join(root, fnm)
+            with codecs.open(fpth, "r", "utf-8") as f:
+                s = f.read()
+                try:
+                    tables[var] = load_yaml(s)
+                    logger.info("init var [%s] done ..." % (var))
+                except Exception as e:
+                    tables[var] = {}
+                    logger.error(e)
     else:
         lang = path.basename(root)
         logger.info("initialing language %s ..." % lang)
@@ -71,7 +83,7 @@ def table(lang, tname):
         return tables[lang][tname]
     else:
         #logger.warn('[%s:%s] is not supported, using en_US by default!' % (lang, tname))
-        return tables['en_US'][tname]
+        return tables['en'][tname]
 
 
 def get(lang, table, key):
@@ -79,7 +91,7 @@ def get(lang, table, key):
         return tables[lang][table][key]
     else:
         #logger.warn('[%s:%s:%s] is not supported, using en_US by default!' % (lang, table, key))
-        return tables['en_US'][table][key]
+        return tables['en'][table][key]
 
 
 @contextmanager
