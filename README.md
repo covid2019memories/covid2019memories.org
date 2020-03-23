@@ -20,6 +20,23 @@ cd covid2019memories.org
 . hello
 ```
 
-The above steps will setup a development enviroment.
+The above steps will setup a development enviroment, and get into the virtualenv environment.
+
+```bash
+python -m main
+```
+
+In the virtualenv environment, issue above command to generate all the pages.
+
+```bash
+nginx -p . -c ngx.conf
+```
+
+Using the above command to start a test server
+
+
+
+
+ 
 
 

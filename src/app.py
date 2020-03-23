@@ -30,12 +30,12 @@ def render_index(ulang='en', perspective='da', category='_', day='latest'):
     return render_template('index.html', **build_context(ulang, perspective, category, day))
 
 
-@app.route('/')
+@app.route('/index.html')
 def home():
     return render_index()
 
 
-@app.route('/<ulang>/index/<perspective>/<category>/<day>')
+@app.route('/<ulang>/index/<perspective>/<category>/<day>.html')
 def index(ulang='en', perspective='datealigned', category='_', day='latest'):
     return render_index(ulang=ulang, perspective=perspective, category=category, day=day)
 

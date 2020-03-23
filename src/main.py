@@ -41,7 +41,7 @@ def build_page(appclient, url, fpth=None):
         rv = appclient.get(url)
         if rv.status == '200 OK':
             if fpth is None:
-                fpth = '%s%s.html' % (basepath, url)
+                fpth = '%s%s' % (basepath, url)
                 pathlib.Path(fpth).parent.mkdir(parents=True, exist_ok=True)
             with open(fpth, mode='wb') as f:
                 f.write(rv.data)
@@ -53,7 +53,7 @@ def build_site():
     appclient = client()
 
     # Home page
-    build_page(appclient, '/', fpth='%s%s.html' % (basepath, '/index'))
+    build_page(appclient, '/index.html', fpth='%s%s' % (basepath, '/index.html'))
 
     langs = get_languages()
     persps = get_perspectives()
