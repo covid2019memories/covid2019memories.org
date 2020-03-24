@@ -99,9 +99,11 @@ def init_db():
                                 if len(flds) == 2:
                                     tmp = '%s\n%s: %s' % (tmp, flds[0], flds[1])
                                 elif len(flds) > 2:
-                                    tmp = '%s\n%s: "%s"' % (tmp, flds[0], '\: '.join(flds[1:]))
+                                    tmp = '%s\n%s: "%s"' % (tmp, flds[0], ':: '.join(flds[1:]).replace('"', '\\"'))
                                 else:
-                                    raise Exception(flds[0])
+                                    if flds[0]:
+                                        tmp = '%s\n%s: ' % (tmp, flds[0])
+                            metatxt = tmp
 
                             lead = lead.replace('\n  ', ' ')
                             try:
