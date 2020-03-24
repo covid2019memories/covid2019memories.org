@@ -9,6 +9,7 @@ import logging
 import os
 import os.path as path
 import sqlite3
+import markdown as md
 
 import util.iso3166 as iso3166
 import util.datecalc as dc
@@ -30,6 +31,7 @@ def setup_db():
         CREATE TABLE articles (
                 aid text,
                 type text,
+                cor text,
                 lang text,
                 pubdate text,
                 source text,
@@ -47,7 +49,7 @@ def setup_db():
 
 def init_db():
     conn = sqlite3.connect('data/memories.db')
-    cor, pubdate = None, None
+    cor, pubdate, content = None, None, None
     for root, dirs, files in os.walk(docpath, followlinks=True):
         logger.info("db checking [%s, %s, %s] ..." % (root, str(dirs), str(files)))
         bname = path.basename(root)
@@ -70,6 +72,25 @@ def init_db():
 
                     try:
                         meta = load_yaml(metatxt)
+                        source = meta['source'].strip()
+                        via = meta['via'].strip()
+                        title = meta['title'].strip()
+                        authors = meta['authors'].strip()
+                        proofreader = meta['proofreader'].strip()
+                        photographer = meta['photographer'].strip()
+                        leading = meta['leading'].strip()
+                        if content is not None:
+                            content = md.markdown(content)
+                        else:
+                            conn.execute('''
+                                INSERT INTO articles VALUES (
+                                    %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s
+                                )''' % (
+                                aid, type, cor, lang, pubdate, source, via,
+                                title, authors, proofreader, photographer,
+                                leading, content
+                            ))
+
                         logger.info("inserting article [%s:%s] ... done" % (lang, aid))
                     except Exception as e:
                         logger.error(e)
