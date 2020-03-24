@@ -117,3 +117,7 @@ def init_db():
 
 setup_db()
 init_db()
+
+
+def query_article(ulang, aid):
+    return None

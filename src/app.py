@@ -3,8 +3,8 @@
 from flask import Flask, render_template
 
 import util.i18n as i18n
-import util.db as db
 
+import util.db as db
 
 app = Flask(__name__, static_folder='../static', static_url_path='', template_folder='../templates')
 
@@ -42,8 +42,9 @@ def index(ulang='en', perspective='datealigned', category='_', day='latest'):
     return render_index(ulang=ulang, perspective=perspective, category=category, day=day)
 
 
-@app.route('/<ulang>/post/<pid>')
-def post():
+@app.route('/<ulang>/post/<aid>.html')
+def post(ulang, aid):
+    article = db.query_article(ulang, aid)
     return render_template('post.html')
 
 
