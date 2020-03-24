@@ -44,7 +44,7 @@ def index(ulang='en', perspective='datealigned', category='_', day='latest'):
 
 @app.route('/<ulang>/post/<aid>.html')
 def post(ulang, aid):
-    article = db.query_article(ulang, aid)
+    article = db.query_article(ulang, type, aid)
     return render_template('post.html')
 
 
