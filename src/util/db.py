@@ -55,7 +55,7 @@ def init_db():
         bname = path.basename(root)
         if bname in iso3166.entities.keys():
             cor = bname
-        elif dc.is_date(bname):
+        elif dc.parse_date(bname):
             pubdate = bname
         else:
             for fnm in files:
