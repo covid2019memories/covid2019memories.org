@@ -48,4 +48,3 @@ def post():
 @app.route('/<ulang>/translation/<tid>')
 def translation():
     return render_template('translation.html')
-

@@ -60,4 +60,7 @@ Check virtual enviroment
 
 if not os.path.exists(".py"):
     sys.argv = ['.py']
-    venv.cli_run(sys.argv)
+    if cur_version >= (3, 7, 7):
+        venv.cli_run(sys.argv)
+    else:
+        venv.main()

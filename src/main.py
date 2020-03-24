@@ -62,6 +62,7 @@ def build_site():
     # Home page
     build_page(appclient, '/index.html', fpth='%s%s' % (basepath, '/index.html'))
 
+    # Skeleton pages
     langs = get_languages()
     persps = get_perspectives()
     cats = get_categories()
