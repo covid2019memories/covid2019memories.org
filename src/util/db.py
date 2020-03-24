@@ -21,12 +21,16 @@ conn = sqlite3.connect('memories.db')
 
 logger = logging.getLogger('db')
 
-docpath = os.path.join(find_path(), '../covid2019-memories')
+docpath = path.abspath(path.join(find_path(), '../covid2019-memories'))
 
 
 def setup_db():
     conn = sqlite3.connect('data/memories.db')
-    conn.execute('''DROP TABLE articles''')
+    try:
+        conn.execute('''DROP TABLE articles''')
+    except Exception:
+        pass
+
     conn.execute('''
         CREATE TABLE articles (
                 aid text,
@@ -36,6 +40,9 @@ def setup_db():
                 pubdate text,
                 source text,
                 via text,
+                link text, 
+                archive text, 
+                snapshot text,
                 title text,
                 authors text,
                 proofreader text,
@@ -48,52 +55,65 @@ def setup_db():
 
 
 def init_db():
+    leading, content = None, None
     conn = sqlite3.connect('data/memories.db')
-    cor, pubdate, content = None, None, None
     for root, dirs, files in os.walk(docpath, followlinks=True):
-        logger.info("db checking [%s, %s, %s] ..." % (root, str(dirs), str(files)))
         bname = path.basename(root)
-        if bname in iso3166.entities.keys():
-            cor = bname
-        elif dc.parse_date(bname):
-            pubdate = bname
-        else:
-            for fnm in files:
-                fpth = os.path.join(root, fnm)
-                aid, type, lang, ext = fnm.split('.')
-                logger.info("inserting article [%s:%s] ..." % (lang, aid))
-                with codecs.open(fpth, "r", "utf-8") as f:
-                    parts = f.read().split('-------------')
-                    if len(parts) == 1:
-                        metatxt = parts[0]
-                    else:
-                        content = parts[0]
-                        metatxt = parts[1]
 
-                    try:
-                        meta = load_yaml(metatxt)
-                        source = meta['source'].strip()
-                        via = meta['via'].strip()
-                        title = meta['title'].strip()
-                        authors = meta['authors'].strip()
-                        proofreader = meta['proofreader'].strip()
-                        photographer = meta['photographer'].strip()
-                        leading = meta['leading'].strip()
-                        if content is not None:
-                            content = md.markdown(content)
+        hidden = False
+        for p in path.normpath(root).split(os.sep):
+            hidden = hidden or len(p) > 0 and p[0] == '.'
+        for p in dirs:
+            hidden = hidden or p[0] == '.'
+
+        if not hidden:
+            logger.info("db checking [%s, %s, %s] ..." % (root, str(dirs), str(files)))
+            if bname in iso3166.entities.keys():
+                cor = bname
+            elif dc.parse_date(bname):
+                pubdate = bname
+
+            for fnm in files:
+                fpth = path.join(root, fnm)
+
+                if cor and pubdate and path.basename(fnm)[0] != '.':
+                    aid, type, lang, ext = fnm.split('.')
+                    logger.info("inserting article [%s:%s] ..." % (lang, aid))
+                    with codecs.open(fpth, "r", "utf-8") as f:
+                        parts = f.read().split('-------------')
+                        if len(parts) == 1:
+                            metatxt = parts[0]
                         else:
-                            conn.execute('''
-                                INSERT INTO articles VALUES (
-                                    %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s
-                                )''' % (
-                                aid, type, cor, lang, pubdate, source, via,
-                                title, authors, proofreader, photographer,
-                                leading, content
+                            content = parts[0]
+                            metatxt = parts[1]
+
+                        try:
+                            meta = load_yaml(metatxt)
+                            source = meta['source'] or ''
+                            via = meta['via'] or ''
+                            link = meta['link'] or ''
+                            archive = meta['archive'] or ''
+                            snapshot = meta['snapshot'] or ''
+                            title = meta['title'] or ''
+                            authors = meta['authors'] or ''
+                            proofreader = meta['proofreader'] or ''
+                            photographer = meta['photographer'] or ''
+                            leading = meta['leading'] or ''
+                            if content is not None:
+                                content = md.markdown(content)
+
+                            conn.execute('INSERT INTO articles VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', (
+                                    aid, type, cor, lang, pubdate, source, via, link, archive, snapshot,
+                                    title, authors, proofreader, photographer,
+                                    leading, content
                             ))
 
-                        logger.info("inserting article [%s:%s] ... done" % (lang, aid))
-                    except Exception as e:
-                        logger.error(e)
+                            logger.info("inserting article [%s:%s] ... done" % (lang, aid))
+                        except Exception as e:
+                            logger.error(e)
     conn.commit()
     conn.close()
 
+
+setup_db()
+init_db()

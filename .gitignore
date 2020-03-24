@@ -130,4 +130,6 @@ dmypy.json
 
 .py/
 public/
+
 logs/*
+data/*

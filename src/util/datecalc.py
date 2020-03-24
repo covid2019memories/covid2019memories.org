@@ -4,4 +4,7 @@ from datetime import datetime
 
 
 def parse_date(astring):
-    return datetime.fromisoformat(astring)
+    try:
+        return datetime.fromisoformat(astring)
+    except Exception:
+        return None
