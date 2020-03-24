@@ -17,8 +17,6 @@ import util.datecalc as dc
 from util.basepath import find_path
 from util.yaml_loader import load_yaml
 
-conn = sqlite3.connect('memories.db')
-
 logger = logging.getLogger('db')
 
 docpath = path.abspath(path.join(find_path(), '../covid2019-memories'))
