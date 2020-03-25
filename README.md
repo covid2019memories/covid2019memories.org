@@ -24,10 +24,16 @@ The above steps will setup a development enviroment, and get into the virtualenv
 
 
 ```bash
+FLASK_APP=src/app.py python -m flask run
+```
+
+to run the development server
+
+```bash
 python -m main
 ```
 
-In the virtualenv environment, issue above command to generate all the pages.
+to generate all the static pages.
 
 ```bash
 nginx -p . -c ngx.conf
