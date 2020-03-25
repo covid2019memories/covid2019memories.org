@@ -15,11 +15,13 @@ So the full state of the page can be shareable on the web.
 
 ```bash
 git clone git@github.com:covid2019memories/covid2019memories.org.git
+git clone git@github.com:covid2019memories/covid2019-memories.git
 cd covid2019memories.org
 . hello
 ```
 
 The above steps will setup a development enviroment, and get into the virtualenv environment.
+
 
 ```bash
 python -m main

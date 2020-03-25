@@ -71,15 +71,19 @@ def home():
     return render_index()
 
 
-@app.route('/<ulang>/index/<perspective>/<category>/<day>.html')
+@app.route('/<ulang>/<perspective>/<category>/<day>/index.html')
 def index(ulang='en', perspective='datealigned', category='_', day='latest'):
     return render_index(ulang=ulang, perspective=perspective, category=category, day=day)
 
 
-@app.route('/<ulang>/post/<aid>.html')
-def post(ulang, aid):
-    article = db.query_article(ulang, type, aid)
-    return render_template('post.html')
+@app.route('/<ulang>/<aname>.html')
+def article(ulang, aname):
+    a = db.query_article(ulang, aname)
+    return render_template('article.html', {
+        "article": a,
+        'ulang': ulang,
+        'name': aname,
+    })
 
 
 @app.route('/<ulang>/translation/<tid>')
