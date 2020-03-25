@@ -122,7 +122,7 @@
             <h4 class="font-italic">Meta</h4>
             <p class="blog-post-meta">{{article['pubdate']}} by <a href="#">{{article['authors']}}</a></p>
             {% for translation in article['translations'] %}
-              <p><a class="p-2 text-muted" href="{{ url_for('article', ulang=translation['lang'], aname=translation['aname']) }}">{{ translation['lang'] }}</a></p>
+              <p><a class="p-2 text-muted" href="{{ url_for('article', ulang=translation['lang'], aname=translation['aname']) }}">{{ languages[translation['lang']] }}</a></p>
             {% endfor %}
           </div>
 
