@@ -17,23 +17,30 @@ FAIL = '\033[91m'
 ENDC = '\033[0m'
 BOLD = "\033[1m"
 
+
 def head(msg):
     print(HEADER + msg + ENDC)
+
 
 def info(msg):
     print(msg)
 
+
 def infog(msg):
     print(OKGREEN + msg + ENDC)
+
 
 def infob(msg):
     print(OKBLUE + msg + ENDC)
 
+
 def warn(msg):
     print(WARNING + msg + ENDC)
 
+
 def err(msg):
     print(FAIL + msg + ENDC)
+
 
 """
 Welcome message
