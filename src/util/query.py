@@ -36,7 +36,7 @@ def query_article(ulang, aname):
     ''', (aname,)).fetchall()
 
     results = db.execute('''
-        SELECT id, aname, atype, title, source, authors, pubdate, cor, lead, content FROM
+        SELECT id, lang, atype, aname, title, source, authors, pubdate, cor, lead, content FROM
             articles
         WHERE
             lang = ? AND aname = ?
@@ -44,16 +44,16 @@ def query_article(ulang, aname):
     ''', (ulang, aname)).fetchall()
 
     return {
-        "id": results[0]['id'],
-        "lang": results[0]['lang'],
-        "atype": results[0]['atype'],
-        "aname": results[0]['aname'],
-        "title": results[0]['title'],
-        "source": results[0]['source'],
-        "authors": results[0]['authors'],
-        "pubdate": results[0]['pubdate'],
-        "cor": results[0]['cor'],
-        "lead": results[0]['lead'],
-        "content": results[0]['content'],
-        "translations": translations
+        "id": results[0][0],
+        "lang": results[0][1],
+        "atype": results[0][2],
+        "aname": results[0][3],
+        "title": results[0][4],
+        "source": results[0][5],
+        "authors": results[0][6],
+        "pubdate": results[0][7],
+        "cor": results[0][8],
+        "lead": results[0][9],
+        "content": results[0][10],
+        "translations": [{ "lang": t[1], "atype": t[2], "aname": t[3], "title": t[4] } for t in translations]
     }

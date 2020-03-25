@@ -78,11 +78,21 @@ def index(ulang='en', perspective='datealigned', category='_', day='latest'):
 
 @app.route('/<ulang>/<aname>.html')
 def article(ulang, aname):
+    default_cor = ['cn', 'it']
     a = q.query_article(ulang, aname)
-    return render_template('article.html', {
+
+    return render_template('article.html', **{
         "article": a,
         'ulang': ulang,
         'name': aname,
+
+        'languages': i18n.tables['languages'],
+        'categories': i18n.table(ulang, 'category'),
+        'lables': i18n.table(ulang, 'lable_index_page'),
+        'corz': i18n.table(ulang, 'country_or_region'),
+        'perspectives': i18n.table(ulang, 'perspective'),
+
+        'default_cor': default_cor,
     })
 
 
