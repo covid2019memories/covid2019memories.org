@@ -14,10 +14,12 @@ import markdown as md
 import util.iso3166 as iso3166
 import util.datecalc as dc
 
+from flask import g
+
 from util.basepath import find_path
 from util.yaml_loader import load_yaml
 
-logger = logging.getLogger('db')
+logger = logging.getLogger('werkzeug')
 
 docpath = path.abspath(path.join(find_path(), '../covid2019-memories'))
 
@@ -38,14 +40,14 @@ def setup_db():
                 cor text not null,
                 pubdate text not null,
                 source text not null,
-                via text,
-                link text,
-                archive text,
-                snapshot text,
-                title text,
-                authors text,
-                proofreader text,
-                photographer text,
+                via text default '',
+                link text default '',
+                archive text default '',
+                snapshot text default '',
+                title text default '',
+                authors text default '',
+                proofreader text default '',
+                photographer text default '',
                 lead text not null,
                 content text not null
     )''')
@@ -100,7 +102,7 @@ def init_db():
                                     tmp = '%s\n%s: "%s"' % (tmp, flds[0], ':: '.join(flds[1:]).replace('"', '\\"'))
                                 else:
                                     if flds[0]:
-                                        tmp = '%s\n%s: ' % (tmp, flds[0])
+                                        tmp = '%s\n%s: _' % (tmp, flds[0])
                             metatxt = tmp
 
                             lead = lead.replace('\n  ', ' ')
@@ -128,14 +130,34 @@ def init_db():
                                         title, authors, proofreader, photographer,
                                         lead, content
                                 ))
+                                logger.info("%s %s %s %s %s", atype, cor, lang, pubdate, aname)
                                 conn.commit()
                                 logger.info("inserting article [%s:%s] ... done" % (lang, aname))
                             except Exception as e:
                                 logger.error(e)
 
+
 setup_db()
 init_db()
 
 
-def query_article(ulang, type, aid):
-    return None
+def get_db():
+    if 'db' not in g:
+        g.db = sqlite3.connect(
+            'data/memories.db',
+            detect_types=sqlite3.PARSE_DECLTYPES
+        )
+        g.db.row_factory = sqlite3.Row
+
+    return g.db
+
+
+def close_db(e=None):
+    db = g.pop('db', None)
+
+    if db is not None:
+        db.close()
+
+
+def init_app(app):
+    app.teardown_appcontext(close_db)

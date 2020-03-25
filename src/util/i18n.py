@@ -13,7 +13,7 @@ from contextlib import contextmanager
 from util.basepath import find_path
 from util.yaml_loader import load_yaml
 
-logger = logging.getLogger('i18n')
+logger = logging.getLogger('werkzeug')
 
 i18n_path = os.path.join(find_path(), 'i18n')
 
