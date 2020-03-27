@@ -117,13 +117,12 @@
         <h4>{{corz[cor]}}</h4>
         <div class="row mb-2">
         {% for result in results[cor] %}
-            <div class="col-md-6">
-                <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col-md-4">
+                <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-2 shadow-sm h-md-250 position-relative">
                     <div class="col p-4 d-flex flex-column position-static">
-                        <h3 class="mb-0"><a href="{{ url_for('article', ulang=ulang, aname=result['aname']) }}">{{result['title']}}</a></h3>
-                        <div class="mb-1 text-muted">{{result['pubdate']}}</div>
-                        <img src="{{result['cover']}}" width='131px' style="float:left"/>
-                        <p class="card-text mb-auto">{{result['lead']}}</p>
+                        <div class="mb-1 text-muted">{{result['pubdate']}} - {{result['source']}}</div>
+                        <img class='p-1' src="{{result['cover']}}" width='300px' align="left"/>
+                        <p class="mb-0"><a href="{{ url_for('article', ulang=ulang, aname=result['aname']) }}">{{result['title']}}</a></p>
                     </div>
                 </div>
             </div>
