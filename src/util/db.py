@@ -49,7 +49,8 @@ def setup_db():
                 proofreader text default '',
                 photographer text default '',
                 lead text not null,
-                content text not null
+                content text not null,
+                cover text not null
     )''')
 
     conn.execute("CREATE UNIQUE INDEX idx_articles_ltn ON articles(lang, atype, aname)")
@@ -93,11 +94,14 @@ def init_db():
                                 metatxt = parts[1]
 
                             tmp = ''
-                            metatxt, lead = metatxt.split('lead:')
+                            cover = ''
                             for line in metatxt.split('\n'):
                                 flds = line.split(': ')
                                 if len(flds) == 2:
-                                    tmp = '%s\n%s: %s' % (tmp, flds[0], flds[1])
+                                    if flds[0] == 'cover':
+                                        cover = flds[1]
+                                    else:
+                                        tmp = '%s\n%s: %s' % (tmp, flds[0], flds[1])
                                 elif len(flds) > 2:
                                     tmp = '%s\n%s: "%s"' % (tmp, flds[0], ':: '.join(flds[1:]).replace('"', '\\"'))
                                 else:
@@ -105,7 +109,6 @@ def init_db():
                                         tmp = '%s\n%s: _' % (tmp, flds[0])
                             metatxt = tmp
 
-                            lead = lead.replace('\n  ', ' ')
                             try:
                                 meta = load_yaml(metatxt)
                                 source = meta['source'] or ''
@@ -117,6 +120,8 @@ def init_db():
                                 authors = meta['authors'] or ''
                                 proofreader = meta['proofreader'] or ''
                                 photographer = meta['photographer'] or ''
+                                lead = meta['lead'] or ''
+                                cover = cover or ''
                                 if content is not None:
                                     content = md.markdown(content)
 
@@ -124,11 +129,11 @@ def init_db():
                                     INSERT INTO articles(
                                         aname, atype, cor, lang, pubdate, source, via, link, archive, snapshot,
                                         title, authors, proofreader, photographer,
-                                        lead, content
-                                    ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''', (
+                                        lead, content, cover
+                                    ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''', (
                                         aname, atype, cor, lang, pubdate, source, via, link, archive, snapshot,
                                         title, authors, proofreader, photographer,
-                                        lead, content
+                                        lead, content, cover
                                 ))
                                 logger.info("%s %s %s %s %s", atype, cor, lang, pubdate, aname)
                                 conn.commit()

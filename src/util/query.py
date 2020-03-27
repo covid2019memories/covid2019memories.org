@@ -8,7 +8,7 @@ from util.db import get_db
 def query_index(ulang, perspective, category, day):
     db = get_db()
     results = db.execute('''
-        SELECT id, aname, atype, title, source, authors, pubdate, cor, lead FROM
+        SELECT id, aname, atype, title, source, authors, pubdate, cor, lead, cover FROM
             articles
         WHERE
             lang = ?
