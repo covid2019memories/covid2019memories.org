@@ -53,7 +53,7 @@ def setup_db():
                 cover text not null
     )''')
 
-    conn.execute("CREATE UNIQUE INDEX idx_articles_ltn ON articles(lang, atype, aname)")
+    conn.execute("CREATE UNIQUE INDEX idx_articles_ltn ON articles(lang, pubdate, atype, aname)")
     conn.execute("CREATE INDEX idx_articles_n ON articles(aname)")
     conn.execute("CREATE INDEX idx_articles_ltcp ON articles(lang, atype, cor, pubdate)")
 

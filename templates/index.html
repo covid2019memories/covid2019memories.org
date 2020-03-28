@@ -22,6 +22,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@appnest/masonry-layout/umd/masonry-layout.min.js"></script>
     <!-- Favicons -->
     <!-- link rel="apple-touch-icon" href="/docs/4.4/assets/img/favicons/apple-touch-icon.png" sizes="180x180"-->
     <!-- link rel="icon" href="/docs/4.4/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png"-->
@@ -115,19 +116,23 @@
 
     {% for cor in results.keys() %}
         <h4>{{corz[cor]}}</h4>
-        <div class="row mb-2">
+        <masonry-layout cols="3">
         {% for result in results[cor] %}
-            <div class="col-md-4">
-                <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-2 shadow-sm h-md-250 position-relative">
-                    <div class="col p-4 d-flex flex-column position-static">
-                        <div class="mb-1 text-muted">{{result['pubdate']}} - {{result['source']}}</div>
-                        <img class='p-1' src="{{result['cover']}}" width='300px' align="left"/>
-                        <p class="mb-0"><a href="{{ url_for('article', ulang=ulang, aname=result['aname']) }}">{{result['title']}}</a></p>
+                <div>
+                    <div>{{result['pubdate']}}: {{result['source'] | truncate(36) | lower}}</div>
+                    <div>
+                        <a href="{{ url_for('article', ulang=ulang, aname=result['aname']) }}">
+                            <img class='p-1' width='370px' src="{{result['cover']}}" align="left"/>
+                        </a>
+                    </div>
+                    <div>
+                        <a href="{{ url_for('article', ulang=ulang, aname=result['aname']) }}">
+                            {{result['title'] | truncate(80) | lower }}
+                        </a>
                     </div>
                 </div>
-            </div>
         {% endfor %}
-         </div>
+        </masonry-layout>
    {% endfor %}
 </div>
 
@@ -138,5 +143,6 @@
         <a href="#">Back to top</a>
     </p>
 </footer>
+<script>document.querySelector("masonry-layout").scheduleLayout();</script>
 </body>
 </html>

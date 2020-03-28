@@ -64,18 +64,6 @@
             </div>
         </div>
     </header>
-    <div class="row flex-nowrap justify-content-between align-items-center">
-        <div class="col-12 d-flex justify-content-end align-items-right" id="languages">
-            <span class="iconify mt-2 mr-1" data-icon="cil:language" data-inline="false"></span>
-            {% for lcode, lname in languages.items() %}
-                {% if lcode == ulang %}
-                    <span class="p-1">{{ lname }}</span>
-                {% else %}
-                    <span class="p-1"><a href="{{ url_for('index', ulang=lcode, perspective=perspective, category=category, day=day) }}">{{ lname }}</a></span>
-                {% endif %}
-            {% endfor %}
-        </div>
-    </div>
 </div>
 
 <div class="container">
@@ -107,7 +95,13 @@
         <div class="col-md-8 blog-main">
 
           <div class="blog-post">
-            {{article['content'] | safe}}
+                {% if article['atype'] == 'o' %}
+                    <h3>{{article['title']}}</h3>
+                    {{article['lead'] | safe}}
+                {% else %}
+                    {{article['content'] | safe}}
+                {% endif %}
+
           </div><!-- /.blog-post -->
 
           <nav class="blog-pagination">
