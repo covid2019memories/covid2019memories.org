@@ -66,7 +66,7 @@
     </header>
 </div>
 
-<div class="container">
+<!--div class="container">
     <div class="nav-scroller py-1 mb-2">
         <h2 class="pb-4 mb-4 font-italic border-bottom">
             {{ lables['explore'] }}
@@ -88,12 +88,11 @@
 
     <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark">
     </div>
-</div>
+</div-->
 
 <main role="main" class="container">
     <div class="row">
         <div class="col-md-8 blog-main">
-
           <div class="blog-post">
                 {% if article['atype'] == 'o' %}
                     <h3>{{article['title']}}</h3>
@@ -101,53 +100,61 @@
                 {% else %}
                     {{article['content'] | safe}}
                 {% endif %}
-
           </div><!-- /.blog-post -->
-
-          <nav class="blog-pagination">
-            <a class="btn btn-outline-primary" href="#">Older</a>
-            <a class="btn btn-outline-secondary disabled" href="#" tabindex="-1" aria-disabled="true">Newer</a>
-          </nav>
-
         </div><!-- /.blog-main -->
 
         <aside class="col-md-4 blog-sidebar">
           <div class="p-4 mb-3 bg-light rounded">
-            <h4 class="font-italic">Meta</h4>
-            <p class="blog-post-meta">{{article['pubdate']}} by <a href="#">{{article['authors']}}</a></p>
-            {% for translation in article['translations'] %}
-              <p><a class="p-2 text-muted" href="{{ url_for('article', ulang=translation['lang'], aname=translation['aname']) }}">{{ languages[translation['lang']] }}</a></p>
-            {% endfor %}
-          </div>
+              <h4>About</h4>
+              <h5>Meta</h5>
+              <ul class="blog-post-meta font-italic">
+                  <li> about {{corz[article['cor']]}} </li>
+                  <li> at {{article['pubdate']}} </li>
+                  <li> by {{article['authors']}} </li>
+                  <li> from  {{article['source']}} </li>
+                  <li> via {{article['via']}} </li>
+              </ul>
 
-          <div class="p-4">
-            <h4 class="font-italic">Archives</h4>
-            <ol class="list-unstyled mb-0">
-              <li><a href="#">March 2014</a></li>
-              <li><a href="#">February 2014</a></li>
-              <li><a href="#">January 2014</a></li>
-              <li><a href="#">December 2013</a></li>
-              <li><a href="#">November 2013</a></li>
-              <li><a href="#">October 2013</a></li>
-              <li><a href="#">September 2013</a></li>
-              <li><a href="#">August 2013</a></li>
-              <li><a href="#">July 2013</a></li>
-              <li><a href="#">June 2013</a></li>
-              <li><a href="#">May 2013</a></li>
-              <li><a href="#">April 2013</a></li>
-            </ol>
-          </div>
+              <h5 class="font-italic">Links</h5>
+              <ul class="blog-post-meta font-italic">
+                  <li> original {{article['link']}} </li>
+                  <li> archive {{article['archive']}} </li>
+                  <li> snapshot {{article['snapshot']}} </li>
+              </ul>
 
-          <div class="p-4">
-            <h4 class="font-italic">Elsewhere</h4>
-            <ol class="list-unstyled">
-              <li><a href="#">GitHub</a></li>
-              <li><a href="#">Twitter</a></li>
-              <li><a href="#">Facebook</a></li>
-            </ol>
-          </div>
-        </aside><!-- /.blog-sidebar -->
+              <h5 class="font-italic">Authorship</h5>
+              <ul class="blog-post-meta font-italic">
+                  <li> authors {{article['authors']}} </li>
+                  <li> proofreader {{article['proofreader']}} </li>
+                  <li> photographer {{article['photographer']}} </li>
+              </ul>
 
+              <h5>Languages</h5>
+              <ul class="blog-post-meta font-italic">
+              {% for translation in article['translations'] %}
+                  <li><a class="p-2 text-muted" href="{{ url_for('article', ulang=translation['lang'], aname=translation['aname']) }}">{{ languages[translation['lang']] }}</a></li>
+              {% endfor %}
+              </ul>
+
+              <h4>Disclaimer</h4>
+              <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                  dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+                  ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+                  eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                  deserunt mollit anim id est laborum.
+              </p>
+
+              <h4>Acknowledgement</h4>
+              <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                  dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+                  ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+                  eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                  deserunt mollit anim id est laborum.
+              </p>
+          </div>
+        </aside>
     </div><!-- /.row -->
 </main><!-- /.container -->
 
