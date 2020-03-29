@@ -55,15 +55,20 @@ db.create_all()
 d.init_db(db, Article)
 
 
-def build_context(ulang):
-    default_cor = ['cn', 'it']
-    results = Article.query.filter_by(lang=ulang).order_by(Article.pubdate.desc())
+def query_articles(lang):
+    results = Article.query.filter_by(lang=lang).order_by(Article.pubdate.desc())
 
     rv = OrderedDict()
     for result in results:
         if result.cor not in rv:
             rv[result.cor] = []
         rv[result.cor].append(result)
+
+    return rv
+
+
+def build_context(ulang):
+    default_cor = ['cn', 'it']
 
     return {
         'ulang': ulang,
@@ -75,7 +80,7 @@ def build_context(ulang):
         'perspectives': i18n.table(ulang, 'perspective'),
 
         'default_cor': default_cor,
-        'results': rv,
+        'results': query_articles(ulang),
     }
 
 

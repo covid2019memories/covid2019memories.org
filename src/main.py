@@ -7,10 +7,8 @@ import re
 
 import app as webapp
 import util.i18n as i18n
-import util.query as q
 
 from distutils.dir_util import copy_tree
-from itertools import product
 from flask import url_for
 
 
@@ -47,7 +45,6 @@ def get_dates():
 
 
 def build_page(appclient, url, fpth=None):
-    url = re.sub('[^0-9a-zA-Z-\./]+', '', url)
     print(url)
     rv = appclient.get(url)
     if rv.status == '200 OK':
@@ -80,17 +77,16 @@ def build_site():
             build_page(appclient, url)
 
     # Detailed article pages
-    langs = get_languages()
-    for lang in product(langs):
+    for lang in langs:
          with webapp.app.test_request_context():
-            results = q.query_index(ulang=lang)
-            for result in results:
-                pubdate = result['pubdate']
-                aname = result['aname']
-                pubdate = re.sub('[^0-9a-zA-Z-\./]+', '', pubdate)
-                aname = re.sub('[^0-9a-zA-Z-\./]+', '', aname)
-                url = url_for('article', ulang=lang, pubdate=pubdate, aname=aname)
-                build_page(appclient, url)
+            rv = webapp.query_articles(lang)
+            for cor, results in rv.items():
+                for result in results:
+                    pubdate = result.pubdate
+                    aname = result.aname
+                    atype = result.atype
+                    url = url_for('article', ulang=lang, pubdate=pubdate, atype=atype, aname=aname)
+                    build_page(appclient, url)
 
 
 if __name__ == '__main__':
