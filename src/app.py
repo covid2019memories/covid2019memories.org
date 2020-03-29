@@ -84,7 +84,7 @@ def build_context(ulang):
     }
 
 
-def render_index(ulang='en', perspective='da', category='_', day='latest'):
+def render_index(ulang='en'):
     return render_template('index.html', **build_context(ulang))
 
 
@@ -111,9 +111,11 @@ def index(ulang='en'):
 def article(ulang, pubdate, aname, atype):
     default_cor = ['cn', 'it']
     a = Article.query.filter_by(lang=ulang, atype=atype, pubdate=pubdate, aname=aname).first()
+    t = Article.query.filter_by(pubdate=pubdate, aname=aname).order_by(Article.lang.asc())
 
     return render_template('article.html', **{
         "article": a,
+        "translations": t,
         'ulang': ulang,
         'pubdate': pubdate,
         'name': aname,

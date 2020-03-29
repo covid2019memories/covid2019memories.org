@@ -103,6 +103,10 @@ def init_db(db, article_cls):
                                 article.content = md.markdown(content)
 
                             article.title = article.title.replace('::', ':')
+                            article.title = article.title.replace('#', '')
+                            article.title = article.title.replace('*', '')
+                            article.title = article.title.replace('[', '')
+                            article.title = article.title.replace(']', '')
 
                             db.session.add(article)
                             logger.info("%s %s %s %s %s", atype, cor, lang, pubdate, aname)

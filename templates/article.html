@@ -94,11 +94,11 @@
     <div class="row">
         <div class="col-md-8 blog-main">
           <div class="blog-post">
-                {% if article['atype'] == 'o' %}
-                    <h3>{{article['title']}}</h3>
-                    {{article['lead'] | safe}}
+                {% if article.atype == 'o' %}
+                    <h3>{{article.title}}</h3>
+                    {{article.lead | safe}}
                 {% else %}
-                    {{article['content'] | safe}}
+                    {{article.content | safe}}
                 {% endif %}
           </div><!-- /.blog-post -->
         </div><!-- /.blog-main -->
@@ -108,31 +108,31 @@
               <h4>About</h4>
               <h5>Meta</h5>
               <ul class="blog-post-meta font-italic">
-                  <li> about {{corz[article['cor']]}} </li>
-                  <li> at {{article['pubdate']}} </li>
-                  <li> by {{article['authors']}} </li>
-                  <li> from  {{article['source']}} </li>
-                  <li> via {{article['via']}} </li>
+                  <li> about {{corz[article.cor]}} </li>
+                  <li> at {{article.pubdate}} </li>
+                  <li> by {{article.authors}} </li>
+                  <li> from  {{article.source}} </li>
+                  <li> via <a href="{{article.via}}">nCovMemory</a></li>
               </ul>
 
               <h5 class="font-italic">Links</h5>
               <ul class="blog-post-meta font-italic">
-                  <li> original {{article['link']}} </li>
-                  <li> archive {{article['archive']}} </li>
-                  <li> snapshot {{article['snapshot']}} </li>
+                  <li><a href="{{article.link}}">original</a></li>
+                  <li><a href="{{article.archive}}">archive</a></li>
+                  <li><a href="{{article.snapshot}}">snapshot</a></li>
               </ul>
 
               <h5 class="font-italic">Authorship</h5>
               <ul class="blog-post-meta font-italic">
-                  <li> authors {{article['authors']}} </li>
-                  <li> proofreader {{article['proofreader']}} </li>
-                  <li> photographer {{article['photographer']}} </li>
+                  <li> authors {{article.authors}} </li>
+                  <li> proofreader {{article.proofreader}} </li>
+                  <li> photographer {{article.photographer}} </li>
               </ul>
 
               <h5>Languages</h5>
               <ul class="blog-post-meta font-italic">
-              {% for translation in article['translations'] %}
-                  <li><a class="p-2 text-muted" href="{{ url_for('article', ulang=translation['lang'], pubdate=article['pubdate'], aname=translation['aname']) }}">{{ languages[translation['lang']] }}</a></li>
+              {% for translation in translations %}
+                  <li><a class="p-2 text-muted" href="{{ url_for('article', ulang=translation.lang, pubdate=article.pubdate, atype=translation.atype, aname=translation.aname) }}">{{ languages[translation['lang']] }}</a></li>
               {% endfor %}
               </ul>
 
