@@ -24,6 +24,38 @@ logger = logging.getLogger('werkzeug')
 docpath = path.abspath(path.join(find_path(), '../covid2019-memories'))
 
 
+def escape(s):
+    s = '%s' % s
+    if s is None or s == '':
+        return '_'
+
+    if s[0] == "'" and s[-1] == "'":
+        s = s[1:-1]
+    if s[0] == '"' and s[-1] == '"':
+        s = s[1:-1]
+
+    return s.replace('"', '\\"')
+
+
+def normalize(metatxt):
+    tmp = ''
+    for line in metatxt.split('\n'):
+        flds = line.split(': ')
+        if len(flds) == 2:
+            tmp = '%s\n%s: "%s"' % (tmp, flds[0], escape(flds[1]))
+        elif len(flds) > 2:
+            tmp = '%s\n%s: "%s"' % (tmp, flds[0], escape(':: '.join(flds[1:])))
+        else:
+            if flds[0]:
+                tmp = '%s\n%s: _' % (tmp, flds[0])
+    return tmp
+
+
+def parse(text):
+    parts = text.split('-------------')
+    return '-------------'.join(parts[0:-1]), normalize(parts[-1])
+
+
 def setup_db():
     conn = sqlite3.connect('data/memories.db')
     try:
@@ -72,7 +104,7 @@ def init_db():
             for p in dirs:
                 hidden = hidden or p[0] == '.'
 
-            if not hidden:
+            if not hidden and bname != 'memories':
                 logger.info("db checking [%s, %s, %s] ..." % (root, str(dirs), str(files)))
                 if bname in iso3166.entities.keys():
                     cor = bname
@@ -86,44 +118,24 @@ def init_db():
                         aname, atype, lang, ext = fnm.split('.')
                         logger.info("inserting article [%s:%s] ..." % (lang, aname))
                         with codecs.open(fpth, "r", "utf-8") as f:
-                            parts = f.read().split('-------------')
-                            if len(parts) == 1:
-                                metatxt = parts[0]
-                            else:
-                                content = parts[0]
-                                metatxt = parts[1]
-
-                            tmp = ''
-                            cover = ''
-                            for line in metatxt.split('\n'):
-                                flds = line.split(': ')
-                                if len(flds) == 2:
-                                    if flds[0] == 'cover':
-                                        cover = flds[1]
-                                    else:
-                                        tmp = '%s\n%s: %s' % (tmp, flds[0], flds[1])
-                                elif len(flds) > 2:
-                                    tmp = '%s\n%s: "%s"' % (tmp, flds[0], ':: '.join(flds[1:]).replace('"', '\\"'))
-                                else:
-                                    if flds[0]:
-                                        tmp = '%s\n%s: _' % (tmp, flds[0])
-                            metatxt = tmp
-
+                            content, metatxt = parse(f.read())
                             try:
                                 meta = load_yaml(metatxt)
-                                source = meta['source'] or ''
-                                via = meta['via'] or ''
-                                link = meta['link'] or ''
-                                archive = meta['archive'] or ''
-                                snapshot = meta['snapshot'] or ''
-                                title = meta['title'] or ''
-                                authors = meta['authors'] or ''
-                                proofreader = meta['proofreader'] or ''
-                                photographer = meta['photographer'] or ''
-                                lead = meta['lead'] or ''
-                                cover = cover or ''
+                                source = meta['source'] or '_'
+                                via = meta['via'] or '_'
+                                link = meta['link'] or '_'
+                                archive = meta['archive'] or '_'
+                                snapshot = meta['snapshot'] or '_'
+                                title = meta['title'] or '_'
+                                authors = meta['authors'] or '_'
+                                proofreader = meta['proofreader'] or '_'
+                                photographer = meta['photographer'] or '_'
+                                lead = meta['lead'] or '_'
+                                cover = meta['cover'] or '_'
                                 if content is not None:
                                     content = md.markdown(content)
+
+                                title = title.replace('::', ':')
 
                                 conn.execute('''
                                     INSERT INTO articles(
@@ -138,8 +150,13 @@ def init_db():
                                 logger.info("%s %s %s %s %s", atype, cor, lang, pubdate, aname)
                                 conn.commit()
                                 logger.info("inserting article [%s:%s] ... done" % (lang, aname))
+
+                                for h in logger.handlers:
+                                    h.flush()
                             except Exception as e:
                                 logger.error(e)
+                                for h in logger.handlers:
+                                    h.flush()
 
 
 setup_db()
