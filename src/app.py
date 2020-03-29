@@ -4,13 +4,19 @@ import logging
 
 from flask import Flask, render_template
 from logging.config import dictConfig
+from flask_sqlalchemy import SQLAlchemy
 
 import util.i18n as i18n
-import util.db as db
+import util.basepath as find_path
 import util.query as q
 
 
+
+
 app = Flask(__name__, static_folder='../static', static_url_path='', template_folder='../templates')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///%s/data/memories.db' % find_path()
+db = SQLAlchemy(app)
+
 db.init_app(app)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.INFO)
@@ -30,6 +36,18 @@ dictConfig({
         'handlers': ['wsgi']
     }
 })
+
+
+class Article(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    lang = db.Column(db.String(10), unique=False, nullable=False)
+    atype = db.Column(db.String(1), unique=False, nullable=False)
+    aname = db.Column(db.String(10), unique=False, nullable=False)
+    lang = db.Column(db.String(10), unique=False, nullable=False)
+
+    def __repr__(self):
+        return '<User %r>' % self.username
+
 
 
 def build_context(ulang):

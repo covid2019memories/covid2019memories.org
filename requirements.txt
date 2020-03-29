@@ -2,3 +2,5 @@ pyyaml
 flask
 markdown
 
+flask-sqlalchemy
+
