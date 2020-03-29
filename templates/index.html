@@ -120,15 +120,15 @@
         <masonry-layout cols="3">
         {% for result in results[cor] %}
                 <div>
-                    <div>{{result['pubdate']}}: {{result['source'] | truncate(36) | lower}}</div>
+                    <div>{{result.pubdate}}: {{result.source | truncate(36) | lower}}</div>
                     <div>
-                        <a href="{{ url_for('article', ulang=ulang, pubdate=result['pubdate'], aname=result['aname']) }}">
-                            <img class='p-1' width='370px' src="{{result['cover']}}" align="left"/>
+                        <a href="{{ url_for('article', ulang=ulang, pubdate=result.pubdate, atype=result.atype, aname=result.aname) }}">
+                            <img class='p-1' width='370px' src="{{result.cover}}" align="left"/>
                         </a>
                     </div>
                     <div>
-                        <a href="{{ url_for('article', ulang=ulang, pubdate=result['pubdate'], aname=result['aname']) }}">
-                            {{result['title'] | truncate(80) | lower }}
+                        <a href="{{ url_for('article', ulang=ulang, pubdate=result.pubdate, atype=result.atype, aname=result.aname) }}">
+                            {{result.title | truncate(80) | lower }}
                         </a>
                     </div>
                 </div>

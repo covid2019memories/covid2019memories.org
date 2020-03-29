@@ -2,57 +2,68 @@
 
 import logging
 
+from collections import OrderedDict
 from flask import Flask, render_template
-from logging.config import dictConfig
 from flask_sqlalchemy import SQLAlchemy
 
 import util.i18n as i18n
-import util.basepath as find_path
-import util.query as q
+import util.db as d
 
-
-
+from util.basepath import find_path
 
 app = Flask(__name__, static_folder='../static', static_url_path='', template_folder='../templates')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///%s/data/memories.db' % find_path()
-db = SQLAlchemy(app)
-
-db.init_app(app)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.INFO)
 
-
-dictConfig({
-    'version': 1,
-    'formatters': {'default': {
-        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-    }},
-    'handlers': {'wsgi': {
-        'class': 'logging.StreamHandler',
-        'formatter': 'default'
-    }},
-    'root': {
-        'level': 'DEBUG',
-        'handlers': ['wsgi']
-    }
-})
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///%s/data/memories.db' % find_path()
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     lang = db.Column(db.String(10), unique=False, nullable=False)
-    atype = db.Column(db.String(1), unique=False, nullable=False)
-    aname = db.Column(db.String(10), unique=False, nullable=False)
-    lang = db.Column(db.String(10), unique=False, nullable=False)
+    atype = db.Column(db.String(2), unique=False, nullable=False)
+    aname = db.Column(db.String(100), unique=False, nullable=False)
+    cor = db.Column(db.String(10), unique=False, nullable=False)
+    pubdate = db.Column(db.String(10), unique=False, nullable=False)
+    source = db.Column(db.String(100), unique=False, nullable=False)
+    via = db.Column(db.String(150), unique=False, nullable=False)
+    link = db.Column(db.String(150), unique=False, nullable=False)
+    archive = db.Column(db.String(150), unique=False, nullable=False)
+    snapshot = db.Column(db.String(150), unique=False, nullable=False)
+    title = db.Column(db.String(200), unique=False, nullable=False)
+    authors = db.Column(db.String(200), unique=False, nullable=False)
+    proofreader = db.Column(db.String(200), unique=False, nullable=False)
+    photographer = db.Column(db.String(200), unique=False, nullable=False)
+    lead = db.Column(db.Text, unique=False, nullable=False)
+    content = db.Column(db.Text, unique=False, nullable=False)
+    cover = db.Column(db.Text, unique=False, nullable=False)
+
+    cnstr = db.UniqueConstraint(lang, atype, pubdate, aname, name='uix')
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<Article %s %s %s %s>' % (self.lang, self.atype, self.pubdate, self.aname)
 
+
+db.Index('idx_articles_pn', Article.pubdate.name, Article.aname.name)
+db.Index('idx_articles_pc', Article.pubdate.name, Article.cor.name)
+db.Index('idx_articles_c', Article.cor.name)
+
+db.drop_all()
+db.create_all()
+d.init_db(db, Article)
 
 
 def build_context(ulang):
     default_cor = ['cn', 'it']
-    rv = q.query_index(ulang)
+    results = Article.query.filter_by(lang=ulang).order_by(Article.pubdate.desc())
+
+    rv = OrderedDict()
+    for result in results:
+        if result.cor not in rv:
+            rv[result.cor] = []
+        rv[result.cor].append(result)
 
     return {
         'ulang': ulang,
@@ -91,10 +102,10 @@ def index(ulang='en'):
     return render_index(ulang=ulang)
 
 
-@app.route('/<ulang>/<pubdate>/<aname>.html')
-def article(ulang, pubdate, aname):
+@app.route('/<ulang>/<pubdate>/<aname>.<atype>.html')
+def article(ulang, pubdate, aname, atype):
     default_cor = ['cn', 'it']
-    a = q.query_article(ulang, pubdate, aname)
+    a = Article.query.filter_by(lang=ulang, atype=atype, pubdate=pubdate, aname=aname).first()
 
     return render_template('article.html', **{
         "article": a,
