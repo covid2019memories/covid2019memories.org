@@ -14,7 +14,6 @@ import markdown as md
 import util.iso3166 as iso3166
 import util.datecalc as dc
 
-from flask import g
 
 from util.basepath import find_path
 from util.yaml_loader import load_yaml
@@ -22,6 +21,11 @@ from util.yaml_loader import load_yaml
 logger = logging.getLogger('werkzeug')
 
 docpath = path.abspath(path.join(find_path(), '../covid2019-memories'))
+
+
+def g():
+    from flask import g as ctx
+    return ctx
 
 
 def escape(s):
@@ -164,18 +168,19 @@ init_db()
 
 
 def get_db():
-    if 'db' not in g:
-        g.db = sqlite3.connect(
+    ctx = g()
+    if 'db' not in ctx:
+        ctx.db = sqlite3.connect(
             'data/memories.db',
             detect_types=sqlite3.PARSE_DECLTYPES
         )
-        g.db.row_factory = sqlite3.Row
+        ctx.db.row_factory = sqlite3.Row
 
-    return g.db
+    return ctx.db
 
 
 def close_db(e=None):
-    db = g.pop('db', None)
+    db = g().pop('db', None)
 
     if db is not None:
         db.close()

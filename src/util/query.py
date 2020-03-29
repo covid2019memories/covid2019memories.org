@@ -5,7 +5,7 @@ from collections import OrderedDict
 from util.db import get_db
 
 
-def query_index(ulang, perspective, category, day):
+def query_index(ulang):
     db = get_db()
     results = db.execute('''
         SELECT id, aname, atype, title, source, authors, pubdate, cor, lead, cover FROM
@@ -13,7 +13,7 @@ def query_index(ulang, perspective, category, day):
         WHERE
             lang = ?
         ORDER BY pubdate DESC
-        LIMIT 200
+        LIMIT 1000
     ''', (ulang,)).fetchall()
 
     rv = OrderedDict()
@@ -25,23 +25,23 @@ def query_index(ulang, perspective, category, day):
     return rv
 
 
-def query_article(ulang, aname):
+def query_article(ulang, pubdate, aname):
     db = get_db()
     translations = db.execute('''
         SELECT id, lang, atype, aname, title FROM
             articles
         WHERE
-            aname = ?
+            aname = ? and pubdate = ?
         ORDER BY lang ASC
-    ''', (aname,)).fetchall()
+    ''', (aname, pubdate)).fetchall()
 
     results = db.execute('''
         SELECT id, lang, atype, aname, title, source, authors, pubdate, cor, lead, content FROM
             articles
         WHERE
-            lang = ? AND aname = ?
+            lang = ? AND aname = ? and pubdate = ?
         ORDER BY pubdate DESC
-    ''', (ulang, aname)).fetchall()
+    ''', (ulang, aname, pubdate)).fetchall()
 
     return {
         "id": results[0][0],

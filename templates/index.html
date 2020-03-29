@@ -61,7 +61,7 @@
     <header class="blog-header py-3">
         <div class="row flex-nowrap justify-content-between align-items-center">
             <div class="col-8 text-left">
-                <a class="blog-header-logo text-dark" href="{{ url_for('index', ulang='en', perspective='da', category='_', day='latest') }}">COVID2019 Memories</a>
+                <a class="blog-header-logo text-dark" href="{{ url_for('index', ulang='en') }}">COVID2019 Memories</a>
             </div>
         </div>
     </header>
@@ -72,7 +72,7 @@
                 {% if lcode == ulang %}
                     <span class="p-1">{{ lname }}</span>
                 {% else %}
-                    <span class="p-1"><a href="{{ url_for('index', ulang=lcode, perspective=perspective, category=category, day=day) }}">{{ lname }}</a></span>
+                    <span class="p-1"><a href="{{ url_for('index', ulang=lcode) }}">{{ lname }}</a></span>
                 {% endif %}
             {% endfor %}
         </div>
@@ -109,7 +109,7 @@
                 {% if ccode == category %}
                     <a class="p-2 text-muted" href="#">{{ cname }}</a>
                 {% else %}
-                    <a class="p-2 text-muted" href="{{ url_for('index', ulang=ulang, perspective=perspective, category=ccode, day=day) }}">{{ cname }}</a>
+                    <a class="p-2 text-muted" href="{{ url_for('index', ulang=ulang) }}">{{ cname }}</a>
                 {% endif %}
             {% endfor %}
         </nav>
@@ -122,12 +122,12 @@
                 <div>
                     <div>{{result['pubdate']}}: {{result['source'] | truncate(36) | lower}}</div>
                     <div>
-                        <a href="{{ url_for('article', ulang=ulang, aname=result['aname']) }}">
+                        <a href="{{ url_for('article', ulang=ulang, pubdate=result['pubdate'], aname=result['aname']) }}">
                             <img class='p-1' width='370px' src="{{result['cover']}}" align="left"/>
                         </a>
                     </div>
                     <div>
-                        <a href="{{ url_for('article', ulang=ulang, aname=result['aname']) }}">
+                        <a href="{{ url_for('article', ulang=ulang, pubdate=result['pubdate'], aname=result['aname']) }}">
                             {{result['title'] | truncate(80) | lower }}
                         </a>
                     </div>

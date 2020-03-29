@@ -60,7 +60,7 @@
     <header class="blog-header py-3">
         <div class="row flex-nowrap justify-content-between align-items-center">
             <div class="col-8 text-left">
-                <a class="blog-header-logo text-dark" href="{{ url_for('index', ulang='en', perspective='da', category='_', day='latest') }}">COVID2019 Memories</a>
+                <a class="blog-header-logo text-dark" href="{{ url_for('index', ulang='en') }}">COVID2019 Memories</a>
             </div>
         </div>
     </header>
@@ -81,8 +81,8 @@
             {% endfor %}
         </div>
         <div class="col-6 d-flex justify-content-end align-items-right">
-            <a href="{{ url_for('index', ulang=ulang, perspective='ch', category=category, day=day) }}" alt="{{ perspectives['ch'] }}"><span class="iconify" data-icon="ic:baseline-date-range" data-inline="false"></span></a>
-            <a href="{{ url_for('index', ulang=ulang, perspective='da', category=category, day=day) }}" alt="{{ perspectives['da'] }}"><span class="iconify" data-icon="fe-align-bottom" data-inline="false"></span></a>
+            <a href="{{ url_for('index', ulang=ulang) }}" alt="{{ perspectives['ch'] }}"><span class="iconify" data-icon="ic:baseline-date-range" data-inline="false"></span></a>
+            <a href="{{ url_for('index', ulang=ulang) }}" alt="{{ perspectives['da'] }}"><span class="iconify" data-icon="fe-align-bottom" data-inline="false"></span></a>
         </div>
     </div>
 
@@ -132,7 +132,7 @@
               <h5>Languages</h5>
               <ul class="blog-post-meta font-italic">
               {% for translation in article['translations'] %}
-                  <li><a class="p-2 text-muted" href="{{ url_for('article', ulang=translation['lang'], aname=translation['aname']) }}">{{ languages[translation['lang']] }}</a></li>
+                  <li><a class="p-2 text-muted" href="{{ url_for('article', ulang=translation['lang'], pubdate=article['pubdate'], aname=translation['aname']) }}">{{ languages[translation['lang']] }}</a></li>
               {% endfor %}
               </ul>
 

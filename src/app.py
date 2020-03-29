@@ -32,15 +32,12 @@ dictConfig({
 })
 
 
-def build_context(ulang, perspective, category, day):
+def build_context(ulang):
     default_cor = ['cn', 'it']
-    rv = q.query_index(ulang, perspective, category, day)
+    rv = q.query_index(ulang)
 
     return {
         'ulang': ulang,
-        'perspective': perspective,
-        'category': category,
-        'day': day,
 
         'languages': i18n.tables['languages'],
         'categories': i18n.table(ulang, 'category'),
@@ -54,7 +51,7 @@ def build_context(ulang, perspective, category, day):
 
 
 def render_index(ulang='en', perspective='da', category='_', day='latest'):
-    return render_template('index.html', **build_context(ulang, perspective, category, day))
+    return render_template('index.html', **build_context(ulang))
 
 
 @app.after_request
@@ -71,19 +68,20 @@ def home():
     return render_index()
 
 
-@app.route('/<ulang>/<perspective>/<category>/<day>/index.html')
-def index(ulang='en', perspective='datealigned', category='_', day='latest'):
-    return render_index(ulang=ulang, perspective=perspective, category=category, day=day)
+@app.route('/<ulang>/index.html')
+def index(ulang='en'):
+    return render_index(ulang=ulang)
 
 
-@app.route('/<ulang>/<aname>.html')
-def article(ulang, aname):
+@app.route('/<ulang>/<pubdate>/<aname>.html')
+def article(ulang, pubdate, aname):
     default_cor = ['cn', 'it']
-    a = q.query_article(ulang, aname)
+    a = q.query_article(ulang, pubdate, aname)
 
     return render_template('article.html', **{
         "article": a,
         'ulang': ulang,
+        'pubdate': pubdate,
         'name': aname,
 
         'languages': i18n.tables['languages'],
@@ -95,7 +93,3 @@ def article(ulang, aname):
         'default_cor': default_cor,
     })
 
-
-@app.route('/<ulang>/translation/<tid>')
-def translation():
-    return render_template('translation.html')
