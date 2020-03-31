@@ -18,8 +18,8 @@ log.setLevel(logging.INFO)
 
 
 pth = Path(find_path(), 'data/memories.db')
-log.info('delete old database %s' % pth)
-pth.unlink()
+#log.info('delete old database %s' % pth)
+#pth.unlink()
 
 
 app = Flask(__name__, static_folder='../static', static_url_path='', template_folder='../templates')
@@ -53,10 +53,6 @@ class Article(db.Model):
     def __repr__(self):
         return '<Article %s %s %s %s>' % (self.lang, self.atype, self.pubdate, self.aname)
 
-
-db.Index('idx_articles_pn', Article.pubdate.name, Article.aname.name)
-db.Index('idx_articles_pc', Article.pubdate.name, Article.cor.name)
-db.Index('idx_articles_c', Article.cor.name)
 
 db.create_all()
 d.init_db(db, Article)
@@ -128,8 +124,11 @@ def article(ulang, pubdate, aname, atype):
         'name': aname,
 
         'languages': i18n.tables['languages'],
+        'statement': i18n.table(ulang, 'statement'),
+        'acknowledgement': i18n.table(ulang, 'acknowledgement'),
+        'disclaimer': i18n.table(ulang, 'disclaimer'),
         'categories': i18n.table(ulang, 'category'),
-        'lables': i18n.table(ulang, 'lable_index_page'),
+        'lables': i18n.table(ulang, 'lable_article_page'),
         'corz': i18n.table(ulang, 'country_or_region'),
         'perspectives': i18n.table(ulang, 'perspective'),
 
