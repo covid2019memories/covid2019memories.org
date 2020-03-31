@@ -17,15 +17,18 @@ log = logging.getLogger('werkzeug')
 log.setLevel(logging.INFO)
 
 
-pth = Path(find_path(), 'data/memories.db')
-#log.info('delete old database %s' % pth)
+#pth = Path(find_path(), 'data/memories.db-journal')
 #pth.unlink()
+#pth = Path(find_path(), 'data/memories.db')
+#pth.unlink()
+#log.info('delete database files %s' % pth)
 
 
 app = Flask(__name__, static_folder='../static', static_url_path='', template_folder='../templates')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///%s/data/memories.db' % find_path()
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+log.info('connected to %s' % app.config['SQLALCHEMY_DATABASE_URI'])
 
 
 class Article(db.Model):
@@ -54,8 +57,8 @@ class Article(db.Model):
         return '<Article %s %s %s %s>' % (self.lang, self.atype, self.pubdate, self.aname)
 
 
-db.create_all()
-d.init_db(db, Article)
+#db.create_all()
+#d.init_db(db, Article)
 
 
 def query_articles(lang):
@@ -78,7 +81,7 @@ def build_context(ulang):
 
         'languages': i18n.tables['languages'],
         'categories': i18n.table(ulang, 'category'),
-        'lables': i18n.table(ulang, 'lable_index_page'),
+        'labels': i18n.table(ulang, 'label_index_page'),
         'corz': i18n.table(ulang, 'country_or_region'),
         'perspectives': i18n.table(ulang, 'perspective'),
 
@@ -128,7 +131,7 @@ def article(ulang, pubdate, aname, atype):
         'acknowledgement': i18n.table(ulang, 'acknowledgement'),
         'disclaimer': i18n.table(ulang, 'disclaimer'),
         'categories': i18n.table(ulang, 'category'),
-        'lables': i18n.table(ulang, 'lable_article_page'),
+        'labels': i18n.table(ulang, 'label_article_page'),
         'corz': i18n.table(ulang, 'country_or_region'),
         'perspectives': i18n.table(ulang, 'perspective'),
 

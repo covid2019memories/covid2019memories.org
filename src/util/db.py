@@ -20,6 +20,8 @@ logger = logging.getLogger('werkzeug')
 
 docpath = path.abspath(path.join(find_path(), '../covid2019-memories'))
 
+dedup = {}
+
 
 def escape(s):
     s = '%s' % s
@@ -75,51 +77,54 @@ def init_db(db, article_cls):
 
                 if cor and pubdate and path.basename(fnm)[0] != '.':
                     aname, atype, lang, ext = fnm.split('.')
-                    logger.info("inserting article [%s:%s:%s:%s] ..." % (lang, atype, pubdate, aname))
-                    with codecs.open(fpth, "r", "utf-8") as f:
-                        content, metatxt = parse(f.read())
-                        try:
-                            db.session.flush()
-                            article = article_cls()
-                            meta = load_yaml(metatxt)
+                    key = "%s:%s:%s:%s" % (lang, atype, pubdate, aname)
+                    if key not in dedup:
+                        dedup[key] = True
+                        logger.info("inserting article [%s:%s:%s:%s] ..." % (lang, atype, pubdate, aname))
+                        with codecs.open(fpth, "r", "utf-8") as f:
+                            content, metatxt = parse(f.read())
+                            try:
+                                db.session.flush()
+                                article = article_cls()
+                                meta = load_yaml(metatxt)
 
-                            article.lang = lang
-                            article.atype = atype
-                            article.aname = aname
-                            article.pubdate = pubdate
-                            article.cor = cor
-                            article.source = meta['source'] or '_'
-                            article.via = meta['via'] or '_'
-                            article.link = meta['link'] or '_'
-                            article.archive = meta['archive'] or '_'
-                            article.snapshot = meta['snapshot'] or '_'
-                            article.title = meta['title'] or '_'
-                            article.authors = meta['authors'] or '_'
-                            article.proofreader = meta['proofreader'] or '_'
-                            article.photographer = meta['photographer'] or '_'
-                            article.lead = meta['lead'] or '_'
-                            article.cover = meta['cover'] or '_'
-                            if content is not None:
-                                article.content = md.markdown(content)
+                                article.lang = lang
+                                article.atype = atype
+                                article.aname = aname
+                                article.pubdate = pubdate
+                                article.cor = cor
+                                article.source = meta['source'] or '_'
+                                article.via = meta['via'] or '_'
+                                article.link = meta['link'] or '_'
+                                article.archive = meta['archive'] or '_'
+                                article.snapshot = meta['snapshot'] or '_'
+                                article.title = meta['title'] or '_'
+                                article.authors = meta['authors'] or '_'
+                                article.proofreader = meta['proofreader'] or '_'
+                                article.photographer = meta['photographer'] or '_'
+                                article.lead = meta['lead'] or '_'
+                                article.cover = meta['cover'] or '_'
+                                if content is not None:
+                                    article.content = md.markdown(content)
 
-                            article.title = article.title.replace('::', ':')
-                            article.title = article.title.replace('#', '')
-                            article.title = article.title.replace('*', '')
-                            article.title = article.title.replace('[', '')
-                            article.title = article.title.replace(']', '')
+                                article.title = article.title.replace('::', ':')
+                                article.title = article.title.replace('#', '')
+                                article.title = article.title.replace('*', '')
+                                article.title = article.title.replace('[', '')
+                                article.title = article.title.replace(']', '')
 
-                            db.session.add(article)
-                            logger.info("%s %s %s %s %s", atype, cor, lang, pubdate, aname)
-                            db.session.commit()
-                            logger.info("inserting article [%s:%s] ... done" % (lang, aname))
-                            db.session.flush()
+                                db.session.add(article)
+                                logger.info("%s %s %s %s %s", atype, cor, lang, pubdate, aname)
+                                db.session.commit()
+                                logger.info("inserting article [%s:%s] ... done" % (lang, aname))
+                                db.session.flush()
 
-                            for h in logger.handlers:
-                                h.flush()
-                        except Exception as e:
-                            db.session.rollback()
-                            db.session.flush()
+                                for h in logger.handlers:
+                                    h.flush()
+                            except Exception as e:
+                                db.session.rollback()
+                                db.session.flush()
 
-                            logger.error(e)
-                            for h in logger.handlers:
-                                h.flush()
+                                logger.error(e)
+                                for h in logger.handlers:
+                                    h.flush()

@@ -69,7 +69,7 @@
 <!--div class="container">
     <div class="nav-scroller py-1 mb-2">
         <h2 class="pb-4 mb-4 font-italic border-bottom">
-            {{ lables['explore'] }}
+            {{ labels['explore'] }}
         </h2>
     </div>
 
@@ -105,8 +105,8 @@
 
         <aside class="col-md-4 blog-sidebar">
           <div class="p-4 mb-3 bg-light rounded">
-              <h4>lables['about']</h4>
-              <h5>lables['meta']</h5>
+              <h4>{{labels['about']}}</h4>
+              <h5>{{labels['meta']}}</h5>
               <ul class="blog-post-meta font-italic">
                   <li> about {{corz[article.cor]}} </li>
                   <li> at {{article.pubdate}} </li>
@@ -114,35 +114,35 @@
                   <li> via <a href="{{article.via}}">nCovMemory</a></li>
               </ul>
 
-              <h5 class="font-italic">lables['authorship']</h5>
+              <h5 class="font-italic">{{labels['authorship']}}</h5>
               <ul class="blog-post-meta font-italic">
                   <li> authors {{article.authors}} </li>
                   <li> proofreader {{article.proofreader}} </li>
                   <li> photographer {{article.photographer}} </li>
               </ul>
 
-              <h5>lables['languages']</h5>
+              <h5>{{labels['languages']}}</h5>
               <ul class="blog-post-meta font-italic">
               {% for translation in translations %}
                   <li><a class="p-2 text-muted" href="{{ url_for('article', ulang=translation.lang, pubdate=article.pubdate, atype=translation.atype, aname=translation.aname) }}">{{ languages[translation['lang']] }}</a></li>
               {% endfor %}
               </ul>
 
-              <h5 class="font-italic">lables['links']</h5>
+              <h5 class="font-italic">{{labels['links']}}</h5>
               <ul class="blog-post-meta font-italic">
                   <li><a href="{{article.link}}">original</a></li>
                   <li><a href="{{article.archive}}">archive</a></li>
                   <li><a href="{{article.snapshot}}">snapshot</a></li>
               </ul>
 
-              <h4>lables['statement']</h4>
-              <p>statement['content']</p>
+              <h4>{{labels['statement']}}</h4>
+              <p>{{statement['content']}}</p>
 
-              <h5>lables['acknowledgement']</h5>
-              <p>acknowledgement['content']</p>
+              <h5>{{labels['acknowledgement']}}</h5>
+              <p>{{acknowledgement['content']}}</p>
 
-              <h5>lables['disclaimer']</h5>
-              <p>disclaimer['content']</p>
+              <h5>{{labels['disclaimer']}}</h5>
+              <p>{{disclaimer['content']}}</p>
           </div>
         </aside>
     </div><!-- /.row -->
