@@ -4,12 +4,29 @@ import os
 import os.path as path
 import pathlib
 import re
+import logging
 
 import app as webapp
 import util.i18n as i18n
 
+from pathlib import Path
 from distutils.dir_util import copy_tree
 from flask import url_for
+
+from util.basepath import find_path
+
+
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.INFO)
+
+
+pth = Path(find_path(), 'data/memories.db-journal')
+if pth.exists():
+    pth.unlink()
+pth = Path(find_path(), 'data/memories.db')
+if pth.exists():
+    pth.unlink()
+log.info('delete database files %s' % pth)
 
 
 basepath = path.join(os.getcwd(), 'public')
@@ -22,26 +39,6 @@ def client():
 
 def get_languages():
     return i18n.tables['languages'].keys()
-
-
-def get_perspectives():
-    return i18n.table('en', 'perspective').keys()
-
-
-def get_categories():
-    return ['_'] + list(i18n.table('en', 'category').keys())
-
-
-def get_days(perspective):
-    return ['latest']
-
-
-def get_dates():
-    return [
-        '2019-12-31',
-        '2020-01-06', '2020-01-19', '2020-01-20', '2020-01-21', '2020-01-22', '2020-01-23', '2020-01-24',
-        '2020-01-25', '2020-01-26',
-    ]
 
 
 def build_page(appclient, url, fpth=None):

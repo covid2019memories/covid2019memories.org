@@ -2,10 +2,10 @@
 
 import logging
 
+
 from collections import OrderedDict
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
-from pathlib import Path
 
 import util.i18n as i18n
 import util.db as d
@@ -15,13 +15,6 @@ from util.basepath import find_path
 
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.INFO)
-
-
-#pth = Path(find_path(), 'data/memories.db-journal')
-#pth.unlink()
-#pth = Path(find_path(), 'data/memories.db')
-#pth.unlink()
-#log.info('delete database files %s' % pth)
 
 
 app = Flask(__name__, static_folder='../static', static_url_path='', template_folder='../templates')
@@ -57,8 +50,13 @@ class Article(db.Model):
         return '<Article %s %s %s %s>' % (self.lang, self.atype, self.pubdate, self.aname)
 
 
-#db.create_all()
-#d.init_db(db, Article)
+try:
+    a = Article.query.first()
+    if not a or a.id <= 0:
+        raise Exception()
+except Exception:
+    db.create_all()
+    d.init_db(db, Article)
 
 
 def query_articles(lang):
