@@ -5,16 +5,24 @@ import logging
 from collections import OrderedDict
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
+from pathlib import Path
 
 import util.i18n as i18n
 import util.db as d
 
 from util.basepath import find_path
 
-app = Flask(__name__, static_folder='../static', static_url_path='', template_folder='../templates')
+
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.INFO)
 
+
+pth = Path(find_path(), 'data/memories.db')
+log.info('delete old database %s' % pth)
+pth.unlink()
+
+
+app = Flask(__name__, static_folder='../static', static_url_path='', template_folder='../templates')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///%s/data/memories.db' % find_path()
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -50,13 +58,12 @@ db.Index('idx_articles_pn', Article.pubdate.name, Article.aname.name)
 db.Index('idx_articles_pc', Article.pubdate.name, Article.cor.name)
 db.Index('idx_articles_c', Article.cor.name)
 
-db.drop_all()
 db.create_all()
 d.init_db(db, Article)
 
 
 def query_articles(lang):
-    results = Article.query.filter_by(lang=lang).order_by(Article.pubdate.desc())
+    results = Article.query.filter_by(lang=lang).filter(Article.cover!=None).order_by(Article.pubdate.desc()).all()
 
     rv = OrderedDict()
     for result in results:

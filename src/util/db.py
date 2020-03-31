@@ -8,7 +8,6 @@ import codecs
 import logging
 import os
 import os.path as path
-import sqlite3
 import markdown as md
 
 import util.iso3166 as iso3166
@@ -76,10 +75,11 @@ def init_db(db, article_cls):
 
                 if cor and pubdate and path.basename(fnm)[0] != '.':
                     aname, atype, lang, ext = fnm.split('.')
-                    logger.info("inserting article [%s:%s] ..." % (lang, aname))
+                    logger.info("inserting article [%s:%s:%s:%s] ..." % (lang, atype, pubdate, aname))
                     with codecs.open(fpth, "r", "utf-8") as f:
                         content, metatxt = parse(f.read())
                         try:
+                            db.session.flush()
                             article = article_cls()
                             meta = load_yaml(metatxt)
 
@@ -112,10 +112,14 @@ def init_db(db, article_cls):
                             logger.info("%s %s %s %s %s", atype, cor, lang, pubdate, aname)
                             db.session.commit()
                             logger.info("inserting article [%s:%s] ... done" % (lang, aname))
+                            db.session.flush()
 
                             for h in logger.handlers:
                                 h.flush()
                         except Exception as e:
+                            db.session.rollback()
+                            db.session.flush()
+
                             logger.error(e)
                             for h in logger.handlers:
                                 h.flush()
