@@ -6,7 +6,6 @@ import pathlib
 import re
 import logging
 
-import app as webapp
 import util.i18n as i18n
 
 from pathlib import Path
@@ -18,7 +17,7 @@ from util.basepath import find_path
 
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.INFO)
-
+basepath = path.join(os.getcwd(), 'public')
 
 pth = Path(find_path(), 'data/memories.db-journal')
 if pth.exists():
@@ -29,7 +28,7 @@ if pth.exists():
 log.info('delete database files %s' % pth)
 
 
-basepath = path.join(os.getcwd(), 'public')
+import app as webapp
 
 
 def client():
