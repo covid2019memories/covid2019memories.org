@@ -109,6 +109,14 @@ img {
     display: block;
 }
 
+masonry-layout div {
+    display: block;
+}
+
+masonry-layout div div {
+    display: block;
+}
+
 h3 {
     font-size: 1.2em;
 }

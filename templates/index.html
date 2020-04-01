@@ -94,7 +94,7 @@
 
     {% for cor in results.keys() %}
         <h4>{{corz[cor]}}</h4>
-        <masonry-layout cols="3">
+        <masonry-layout cols="auto">
         {% for result in results[cor] %}
                 <div>
                     <div>{{result.pubdate}}: {{result.source | truncate(36) | lower}}</div>
