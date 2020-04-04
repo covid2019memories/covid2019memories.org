@@ -11,18 +11,15 @@
     <link rel="canonical" href="http://covid2019memories.org">
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-            crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-            crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/@appnest/masonry-layout/umd/masonry-layout.min.js"></script>
+    <link rel="stylesheet" href="/style/bootstrap.min.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/masonry-layout.min.js"></script>
+    <script src="/js/iconify.min.js"></script>
+    <script src="/js/d3.v5.min.js"></script>
+    <script src="/js/d3-queue.v3.min.js"></script>
+
     <!-- Favicons -->
     <!-- link rel="apple-touch-icon" href="/docs/4.4/assets/img/favicons/apple-touch-icon.png" sizes="180x180"-->
     <!-- link rel="icon" href="/docs/4.4/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png"-->
@@ -51,23 +48,37 @@
     </style>
     <!-- Custom styles for this template -->
     <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
-    <!-- Custom styles for this template -->
     <link href="/style/blog.css" rel="stylesheet">
-    <script src="https://code.iconify.design/1/1.0.4/iconify.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
     <script>
+        var q = d3.queue(3);
+
+        function delayedLoad(elem, url, delay) {
+            var id = setTimeout(function() {
+                try {
+                    $(elem).load(url, function (response, status, xhr) {
+                        if (xhr.status == 200) {
+                            $(elem).data('status', 'complete');
+                        }
+                    });
+                } catch (e) {
+                }
+            }, delay);
+        }
+
         $(function() {
-            $(window).on('resize scroll', function() {
-                $.each($('.card'), function(ix, elem) {
+            $(window).on('resize scroll', function () {
+                $.each($('.card'), function (ix, elem) {
+                    var url = $(elem).data('url');
+                    var status = $(elem).data('status');
+
                     var viewTop = $(window).scrollTop();
                     var elemTop = $(elem).offset().top;
                     if (elemTop - 2000 < viewTop) {
-                        var url = $(elem).data('url');
-                        var complete = $(elem).data('complete');
-                        if (url && !complete) {
-                            $(elem).load(url, function () {
-                                $(elem).data('complete', 'true');
-                            });
+                        if (url.startsWith('/') && typeof status == "undefined") {
+                            try {
+                                q.defer(delayedLoad(elem, url, 10));
+                            } catch (e) {
+                            }
                         }
                     }
                 });
