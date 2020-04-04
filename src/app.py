@@ -59,8 +59,8 @@ except Exception:
     d.init_db(db, Article)
 
 
-def query_articles(lang):
-    results = Article.query.filter_by(lang=lang).filter(Article.cover!=None).order_by(Article.pubdate.desc()).all()
+def query_articles(lang, limit=4000):
+    results = Article.query.filter_by(lang=lang).filter(Article.cover!=None).order_by(Article.pubdate.desc()).limit(limit).all()
 
     rv = OrderedDict()
     for result in results:
@@ -111,28 +111,39 @@ def index(ulang='en'):
     return render_index(ulang=ulang)
 
 
-@app.route('/<ulang>/<pubdate>/<aname>.<atype>.html')
-def article(ulang, pubdate, aname, atype):
+@app.route('/<ulang>/<pubdate>/<aname>.<atype>.<akind>.html')
+def article(ulang, pubdate, aname, atype, akind):
     default_cor = ['cn', 'it']
     a = Article.query.filter_by(lang=ulang, atype=atype, pubdate=pubdate, aname=aname).first()
-    t = Article.query.filter_by(pubdate=pubdate, aname=aname).order_by(Article.lang.asc())
 
-    return render_template('article.html', **{
-        "article": a,
-        "translations": t,
-        'ulang': ulang,
-        'pubdate': pubdate,
-        'name': aname,
+    if akind == 'a':
+        t = Article.query.filter_by(pubdate=pubdate, aname=aname).order_by(Article.lang.asc())
 
-        'languages': i18n.tables['languages'],
-        'statement': i18n.table(ulang, 'statement'),
-        'acknowledgement': i18n.table(ulang, 'acknowledgement'),
-        'disclaimer': i18n.table(ulang, 'disclaimer'),
-        'categories': i18n.table(ulang, 'category'),
-        'labels': i18n.table(ulang, 'label_article_page'),
-        'corz': i18n.table(ulang, 'country_or_region'),
-        'perspectives': i18n.table(ulang, 'perspective'),
+        return render_template('article.html', **{
+            "article": a,
+            "translations": t,
+            'ulang': ulang,
+            'pubdate': pubdate,
+            'name': aname,
 
-        'default_cor': default_cor,
-    })
+            'languages': i18n.tables['languages'],
+            'statement': i18n.table(ulang, 'statement'),
+            'acknowledgement': i18n.table(ulang, 'acknowledgement'),
+            'disclaimer': i18n.table(ulang, 'disclaimer'),
+            'categories': i18n.table(ulang, 'category'),
+            'labels': i18n.table(ulang, 'label_article_page'),
+            'corz': i18n.table(ulang, 'country_or_region'),
+            'perspectives': i18n.table(ulang, 'perspective'),
+
+            'default_cor': default_cor,
+        })
+    elif akind == 'c':
+
+        return render_template('card.html', **{
+            "article": a,
+            'ulang': ulang,
+            'pubdate': pubdate,
+            'name': aname,
+        })
+
 

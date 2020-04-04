@@ -54,6 +54,27 @@
     <!-- Custom styles for this template -->
     <link href="/style/blog.css" rel="stylesheet">
     <script src="https://code.iconify.design/1/1.0.4/iconify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+    <script>
+        $(function() {
+            $(window).on('resize scroll', function() {
+                $.each($('.card'), function(ix, elem) {
+                    var viewTop = $(window).scrollTop();
+                    var elemTop = $(elem).offset().top;
+                    if (elemTop - 2000 < viewTop) {
+                        var url = $(elem).data('url');
+                        var complete = $(elem).data('complete');
+                        if (url && !complete) {
+                            $(elem).load(url, function () {
+                                $(elem).data('complete', 'true');
+                            });
+                        }
+                    }
+                });
+            });
+            $(window).trigger("resize");
+        });
+    </script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -96,19 +117,7 @@
         <h4>{{corz[cor]}}</h4>
         <masonry-layout cols="auto">
         {% for result in results[cor] %}
-                <div>
-                    <div>{{result.pubdate}}: {{result.source | truncate(36) | lower}}</div>
-                    <div>
-                        <a href="{{ url_for('article', ulang=ulang, pubdate=result.pubdate, atype=result.atype, aname=result.aname) }}">
-                            <img class='p-1' width="360px" src="{{result.cover}}" align="left"/>
-                        </a>
-                    </div>
-                    <div>
-                        <a href="{{ url_for('article', ulang=ulang, pubdate=result.pubdate, atype=result.atype, aname=result.aname) }}">
-                            {{result.title | truncate(80) | lower }}
-                        </a>
-                    </div>
-                </div>
+            <div class="card" data-url="{{ url_for('article', ulang=ulang, pubdate=result.pubdate, atype=result.atype, aname=result.aname, akind='c') }}"></div>
         {% endfor %}
         </masonry-layout>
    {% endfor %}

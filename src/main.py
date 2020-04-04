@@ -81,7 +81,9 @@ def build_site():
                     pubdate = result.pubdate
                     aname = result.aname
                     atype = result.atype
-                    url = url_for('article', ulang=lang, pubdate=pubdate, atype=atype, aname=aname)
+                    url = url_for('article', ulang=lang, pubdate=pubdate, atype=atype, aname=aname, akind='a')
+                    build_page(appclient, url)
+                    url = url_for('article', ulang=lang, pubdate=pubdate, atype=atype, aname=aname, akind='c')
                     build_page(appclient, url)
 
 

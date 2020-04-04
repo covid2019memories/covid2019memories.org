@@ -132,7 +132,7 @@
               <h5>{{labels['languages']}}</h5>
               <ul class="blog-post-meta font-italic">
               {% for translation in translations %}
-                  <li><a class="p-2 text-muted" href="{{ url_for('article', ulang=translation.lang, pubdate=article.pubdate, atype=translation.atype, aname=translation.aname) }}">{{ languages[translation['lang']] }}</a></li>
+                  <li><a class="p-2 text-muted" href="{{ url_for('article', ulang=translation.lang, pubdate=article.pubdate, atype=translation.atype, aname=translation.aname, akind='a') }}">{{ languages[translation['lang']] }}</a></li>
               {% endfor %}
               </ul>
 

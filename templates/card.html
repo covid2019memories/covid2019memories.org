@@ -1,0 +1,13 @@
+<div>
+    <div>{{article.pubdate}}: {{article.source | truncate(36) | lower}}</div>
+    <div>
+        <a href="{{ url_for('article', ulang=ulang, pubdate=article.pubdate, atype=article.atype, aname=article.aname, akind='a') }}">
+            <img class='p-1' width="360px" src="{{article.cover}}" align="left"/>
+        </a>
+    </div>
+    <div>
+        <a href="{{ url_for('article', ulang=ulang, pubdate=article.pubdate, atype=article.atype, aname=article.aname, akind='a') }}">
+            {{article.title | truncate(80) | lower }}
+        </a>
+    </div>
+</div>
