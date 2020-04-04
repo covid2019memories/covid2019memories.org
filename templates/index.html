@@ -117,7 +117,7 @@
         <h4>{{corz[cor]}}</h4>
         <masonry-layout cols="auto">
         {% for result in results[cor] %}
-            <div class="card" data-url="{{ url_for('article', ulang=ulang, pubdate=result.pubdate, atype=result.atype, aname=result.aname, akind='c') }}"></div>
+            <div class="card border-0" data-url="{{ url_for('article', ulang=ulang, pubdate=result.pubdate, atype=result.atype, aname=result.aname, akind='c') }}"></div>
         {% endfor %}
         </masonry-layout>
    {% endfor %}
